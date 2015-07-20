@@ -65,7 +65,7 @@ module.exports = function(callback) {
     }
 
     var
-      component            = release.components[index]
+      component            = release.components[index],
       outputDirectory      = path.resolve(release.outputRoot + component),
       capitalizedComponent = component.charAt(0).toUpperCase() + component.slice(1),
       repoName             = release.componentRepoRoot + capitalizedComponent,
@@ -149,7 +149,7 @@ module.exports = function(callback) {
       // avoid rate throttling
       global.clearTimeout(timer);
       timer = global.setTimeout(function() {
-        stepRepo()
+        stepRepo();
       }, 0);
     }
 

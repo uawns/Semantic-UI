@@ -397,9 +397,9 @@ module.exports = function () {
 
   });
 
-  return runSequence('interactive install', function(callback) {
+  runSequence('interactive install', function(callback) {
     console.log('real done event');
-    callback();
+    process.exit();
   });
 
 };

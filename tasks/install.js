@@ -184,7 +184,7 @@ module.exports = function () {
        Set-up
   ---------------*/
 
-  return gulp
+  var installTask = gulp
     .src('gulpfile.js')
     .pipe(prompt.prompt(questions.setup, function(answers) {
 
@@ -390,8 +390,13 @@ module.exports = function () {
       if(answers.build == 'yes') {
         gulp.start('build');
       }
-      return;
     }))
+  ;
+
+  console.log(installTask !== undefined ? 0 : 1);
+  return (installTask !== undefined)
+    ? 0
+    : 1
   ;
 
 };

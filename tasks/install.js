@@ -270,7 +270,7 @@ module.exports = function () {
             console.error('NPM does not have permissions to create folders at your specified path. Adjust your folders permissions and run "npm install" again');
           }
 
-          console.log('Installing to \033[92m' + answers.semanticRoot + '\033[0m');
+          console.log('Using path \033[92m' + answers.semanticRoot + '\033[0m');
 
           console.info('Copying UI definitions');
           wrench.copyDirSyncRecursive(source.definitions, installPaths.definition, settings.wrench.overwrite);
@@ -411,7 +411,7 @@ module.exports = function () {
   });
 
   return runSequence('interactive install', function() {
-    return;
+    process.exit();
   });
 
 };

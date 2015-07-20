@@ -48,6 +48,7 @@
     "map-stream": "^0.1.0",
     "mkdirp": "^0.5.1",
     "require-dot-file": "^0.4.0",
+    "run-sequence": "^1.1.0",
     "wrench": "https://github.com/derekslife/wrench-js/tarball/156eaceed68ed31ffe2a3ecfbcb2be6ed1417fb2",
     "yamljs": "^0.2.3"
   },
@@ -57,7 +58,6 @@
     "gulp-debug": "^2.0.1",
     "gulp-git": "^1.2.4",
     "gulp-tap": "^0.1.3",
-    "merge-stream": "^0.1.7",
-    "run-sequence": "^1.1.0"
+    "merge-stream": "^0.1.7"
   }
 }

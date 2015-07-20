@@ -78,7 +78,7 @@ module.exports = function () {
   /* Don't do end user config if SUI is a sub-module */
   if( install.isSubModule() ) {
     console.info('SUI is a sub-module, skipping end-user install');
-    return;
+    return 0;
   }
 
   // run update scripts if semantic.json exists
@@ -144,11 +144,11 @@ module.exports = function () {
 
         console.info('Update complete! Run "\033[92mgulp build\033[0m" to rebuild dist/ files.');
 
-        return;
+        return 0;
       }
       else {
         console.log('Current version of Semantic UI already installed');
-        return;
+        return 0;
       }
 
     }
@@ -184,7 +184,7 @@ module.exports = function () {
        Set-up
   ---------------*/
 
-  return gulp
+  var installTask = gulp
     .src('gulpfile.js')
     .pipe(prompt.prompt(questions.setup, function(answers) {
 
@@ -194,7 +194,7 @@ module.exports = function () {
 
       // if config exists and user specifies not to proceed
       if(answers.overwrite !== undefined && answers.overwrite == 'no') {
-        return;
+        return 0;
       }
 
       console.clear();
@@ -393,5 +393,9 @@ module.exports = function () {
     }))
   ;
 
+  return (function(task){
+    console.log(task);
+    return 0;
+  })(installTask);
 
 };

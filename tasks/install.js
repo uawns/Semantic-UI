@@ -188,7 +188,7 @@ module.exports = function () {
 
     return gulp
       .src('gulpfile.js')
-      .pipe(prompt.prompt(questions.setup, function(answers, callback) {
+      .pipe(prompt.prompt(questions.setup, function(answers) {
 
         /*--------------
          Exit Conditions
@@ -381,20 +381,21 @@ module.exports = function () {
           }
         });
 
-        runSequence(
+        return runSequence(
           'create theme.config',
-          'create semantic.json',
-          callback
+          'create semantic.json', function() {
+            // Completion Message
+            if(installFolder) {
+              console.log('Install complete! Navigate to \033[92m' + answers.semanticRoot + '\033[0m and run "\033[92mgulp build\033[0m" to build');
+            }
+            else {
+              console.log('');
+              console.log('');
+            }
+            return;
+          }
         );
 
-        // Completion Message
-        if(installFolder) {
-          console.log('Install complete! Navigate to \033[92m' + answers.semanticRoot + '\033[0m and run "\033[92mgulp build\033[0m" to build');
-        }
-        else {
-          console.log('');
-          console.log('');
-        }
 
       }))
       .pipe(prompt.prompt(questions.cleanup, function(answers) {

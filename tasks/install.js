@@ -55,7 +55,7 @@ var
 ;
 
 // Export install task
-module.exports = function () {
+module.exports = function (callback) {
 
   var
     currentConfig = requireDotFile('semantic.json'),
@@ -410,8 +410,6 @@ module.exports = function () {
 
   });
 
-  return runSequence('interactive install', function() {
-    process.exit();
-  });
+  runSequence('interactive install', callback);
 
 };

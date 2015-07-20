@@ -363,7 +363,7 @@ module.exports = function () {
           // adjust variables in theme.less
           if( fs.existsSync(files.config) ) {
             console.info('Extending config file (semantic.json)', installPaths.config);
-            gulp.src(installPaths.config)
+            return gulp.src(installPaths.config)
               .pipe(plumber())
               .pipe(rename(settings.rename.json)) // preserve file extension
               .pipe(jsonEditor(jsonConfig))
@@ -372,7 +372,7 @@ module.exports = function () {
           }
           else {
             console.info('Creating config file (semantic.json)', installPaths.config);
-            gulp.src(source.config)
+            return gulp.src(source.config)
               .pipe(plumber())
               .pipe(rename({ extname : '' })) // remove .template from ext
               .pipe(jsonEditor(jsonConfig))

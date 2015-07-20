@@ -184,7 +184,7 @@ module.exports = function () {
        Set-up
   ---------------*/
 
-  gulp
+  return gulp
     .src('gulpfile.js')
     .pipe(prompt.prompt(questions.setup, function(answers) {
 
@@ -390,9 +390,8 @@ module.exports = function () {
       if(answers.build == 'yes') {
         gulp.start('build');
       }
+      return;
     }))
   ;
-
-  return;
 
 };

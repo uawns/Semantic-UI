@@ -188,7 +188,7 @@ module.exports = function () {
 
     return gulp
       .src('gulpfile.js')
-      .pipe(prompt.prompt(questions.setup, function(answers) {
+      .pipe(prompt.prompt(questions.setup, function(answers, callback) {
 
         /*--------------
          Exit Conditions
@@ -319,70 +319,83 @@ module.exports = function () {
           Theme Config
         ---------------*/
 
-        var
-          // determine path to site theme folder from theme config
-          // force CSS path variable to use forward slashes for paths
-          pathToSite   = path.relative(path.resolve(installPaths.themeConfigFolder), path.resolve(installPaths.site)).replace(/\\/g,'/'),
-          siteVariable = "@siteFolder   : '" + pathToSite + "/';"
-        ;
+        gulp.task('create theme.config', function() {
 
-        // rewrite site variable in theme.less
-        console.info('Adjusting @siteFolder to: ', pathToSite + '/');
+          var
+            // determine path to site theme folder from theme config
+            // force CSS path variable to use forward slashes for paths
+            pathToSite   = path.relative(path.resolve(installPaths.themeConfigFolder), path.resolve(installPaths.site)).replace(/\\/g,'/'),
+            siteVariable = "@siteFolder   : '" + pathToSite + "/';"
+          ;
 
-        if(fs.existsSync(installPaths.themeConfig)) {
-          console.info('Modifying src/theme.config (LESS config)', installPaths.themeConfig);
-          gulp.src(installPaths.themeConfig)
-            .pipe(plumber())
-            .pipe(replace(regExp.siteVariable, siteVariable))
-            .pipe(gulp.dest(installPaths.themeConfigFolder))
-          ;
-        }
-        else {
-          console.info('Creating src/theme.config (LESS config)', installPaths.themeConfig);
-          gulp.src(source.themeConfig)
-            .pipe(plumber())
-            .pipe(rename({ extname : '' }))
-            .pipe(replace(regExp.siteVariable, siteVariable))
-            .pipe(gulp.dest(installPaths.themeConfigFolder))
-          ;
-        }
+          // rewrite site variable in theme.less
+          console.info('Adjusting @siteFolder to: ', pathToSite + '/');
+
+          if(fs.existsSync(installPaths.themeConfig)) {
+            console.info('Modifying src/theme.config (LESS config)', installPaths.themeConfig);
+            return gulp.src(installPaths.themeConfig)
+              .pipe(plumber())
+              .pipe(replace(regExp.siteVariable, siteVariable))
+              .pipe(gulp.dest(installPaths.themeConfigFolder))
+            ;
+          }
+          else {
+            console.info('Creating src/theme.config (LESS config)', installPaths.themeConfig);
+            return gulp.src(source.themeConfig)
+              .pipe(plumber())
+              .pipe(rename({ extname : '' }))
+              .pipe(replace(regExp.siteVariable, siteVariable))
+              .pipe(gulp.dest(installPaths.themeConfigFolder))
+            ;
+          }
+
+        });
 
         /*--------------
           Semantic.json
         ---------------*/
 
-        var
-          jsonConfig = install.createJSON(answers)
-        ;
-
-        // adjust variables in theme.less
-        if( fs.existsSync(files.config) ) {
-          console.info('Extending config file (semantic.json)', installPaths.config);
-          gulp.src(installPaths.config)
-            .pipe(plumber())
-            .pipe(rename(settings.rename.json)) // preserve file extension
-            .pipe(jsonEditor(jsonConfig))
-            .pipe(gulp.dest(installPaths.configFolder))
+        gulp.task('create semantic.json', function() {
+          var
+            jsonConfig = install.createJSON(answers)
           ;
-        }
-        else {
-          console.info('Creating config file (semantic.json)', installPaths.config);
-          gulp.src(source.config)
-            .pipe(plumber())
-            .pipe(rename({ extname : '' })) // remove .template from ext
-            .pipe(jsonEditor(jsonConfig))
-            .pipe(gulp.dest(installPaths.configFolder))
-          ;
-        }
 
-        // Completion Message
-        if(installFolder) {
-          console.log('Install complete! Navigate to \033[92m' + answers.semanticRoot + '\033[0m and run "\033[92mgulp build\033[0m" to build');
-        }
-        else {
-          console.log('');
-          console.log('');
-        }
+          // adjust variables in theme.less
+          if( fs.existsSync(files.config) ) {
+            console.info('Extending config file (semantic.json)', installPaths.config);
+            gulp.src(installPaths.config)
+              .pipe(plumber())
+              .pipe(rename(settings.rename.json)) // preserve file extension
+              .pipe(jsonEditor(jsonConfig))
+              .pipe(gulp.dest(installPaths.configFolder))
+            ;
+          }
+          else {
+            console.info('Creating config file (semantic.json)', installPaths.config);
+            gulp.src(source.config)
+              .pipe(plumber())
+              .pipe(rename({ extname : '' })) // remove .template from ext
+              .pipe(jsonEditor(jsonConfig))
+              .pipe(gulp.dest(installPaths.configFolder))
+            ;
+          }
+        });
+
+        runSequence(
+          'create theme.config',
+          'create semantic.json',
+          function() {
+            // Completion Message
+            if(installFolder) {
+              console.log('Install complete! Navigate to \033[92m' + answers.semanticRoot + '\033[0m and run "\033[92mgulp build\033[0m" to build');
+            }
+            else {
+              console.log('');
+              console.log('');
+            }
+            callback();
+          }
+        );
 
       }))
       .pipe(prompt.prompt(questions.cleanup, function(answers) {
@@ -399,9 +412,7 @@ module.exports = function () {
 
   runSequence('interactive install', function(callback) {
     console.log('real done event');
-    process.nextTick(function() {
-      process.exit();
-    });
+    process.exit();
   });
 
 };
